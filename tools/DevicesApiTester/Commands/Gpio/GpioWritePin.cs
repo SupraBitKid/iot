@@ -1,6 +1,5 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Device.Gpio;
@@ -15,13 +14,13 @@ namespace DeviceApiTester.Commands.Gpio
         [Option('p', "pin", HelpText = "The GPIO pin to write to. The number is based on the --scheme argument.", Required = true)]
         public int Pin { get; set; }
 
-        [Option('v', "value", HelpText = "The value to write to pin: { High | Low }", Required = true)]
-        public PinValue Value { get; set; }
+        [Option('v', "value", HelpText = "The value to write to pin: { 0 | 1 }", Required = true)]
+        public int Value { get; set; }
 
         /// <summary>Executes the command asynchronously.</summary>
         /// <returns>The command's exit code.</returns>
         /// <remarks>
-        ///     NOTE: This test app uses the base class's <see cref="CreateGpioController"/> method to create a device.<br/>
+        ///     NOTE: This test app uses the base class's <see cref="GpioCommand.CreateGpioController"/> method to create a device.<br/>
         ///     Real-world usage would simply create an instance of <see cref="GpioController"/>:
         ///     <code>using (var controller = new GpioController())</code>
         /// </remarks>

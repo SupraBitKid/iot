@@ -1,31 +1,40 @@
-﻿# Microchip Mcp23xxx
+﻿# Mcp23xxx - I/O Expander device family
 
-## Summary
 The MCP23XXX device family provides 8/16-bit, general purpose parallel I/O expansion for I2C or SPI applications.  These devices include a range of addressing schemes and I/O configurations including pull-up resistors, polarity inverting, and interrupts.
 
-## Device Family
+## Documentation
+
+- The docuementation from [Adafruit](https://www.adafruit.com/product/732)
+- [Learn how to use MCP23008 and MCP23017 with Python](https://learn.adafruit.com/using-mcp23008-mcp23017-with-circuitpython/overview) from the Adafruit learn courses used to create this binding.
+
+### Device Family
+
 MCP23XXX devices contain different markings to distinguish features like interfacing, packaging, and temperature ratings.  For example, MCP23017 contains an I2C interface and MCP23S17 contains a SPI interface.  Please review specific datasheet for more information.
 
-**MCP23X08**: http://ww1.microchip.com/downloads/en/DeviceDoc/21919e.pdf  
-**MCP23X09**: http://ww1.microchip.com/downloads/en/DeviceDoc/20002121C.pdf  
-**MCP23X17**: http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf  
-**MCP23X18**: http://ww1.microchip.com/downloads/en/DeviceDoc/22103a.pdf  
+- MCP23X08 [datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/21919e.pdf)
+- MCP23X09 [datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/20002121C.pdf)
+- MCP23X17 [datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf)
+- MCP23X18 [datasheet](http://ww1.microchip.com/downloads/en/DeviceDoc/22103a.pdf)
 
 **NOTE**: MCP23X16 contains different internal circuitry and is not compatible with this binding.
 
-## Binding Notes
+## Usage
 
-This binding includes an `Mcp23xxx` abstract class and implementations for both I2C (`Mcp230xx`) and SPI (`Mcp23Sxx`) interfaces.  You can create either one by passing in the respective communication driver.
+### Mcp230xx I2C
 
-#### Mcp230xx I2C
+![I2C Interface](Mcp23S17_I2c_ReadSwitches_WriteLeds.png)  
+
 ```csharp
- // 0x20 is the device address in this example.
+// 0x20 is the device address in this example.
 var connectionSettings = new I2cConnectionSettings(1, 0x20);
-var i2cDevice = new UnixI2cDevice(connectionSettings);
+var i2cDevice = I2cDevice.Create(connectionSettings);
 var mcp23S17 = new Mcp23017(i2cDevice);
 ```
 
-#### Mcp23Sxx SPI
+### Mcp23Sxx SPI
+
+![SPI interface](Mcp23S17_Spi_ReadSwitches_WriteLeds.png)
+
 ```csharp
 var connectionSettings = new SpiConnectionSettings(0, 0)
 {
@@ -33,49 +42,51 @@ var connectionSettings = new SpiConnectionSettings(0, 0)
     Mode = SpiMode.Mode0
 };
 
-var spiDevice = new UnixSpiDevice(connectionSettings);
+var spiDevice = SpiDevice.Create(connectionSettings);
 
 // 0x20 is the device address in this example.
-var mcp23S17 = new Mcp23S17(0x20, spiDevice);
+var mcp23S17 = new Mcp23S17(spiDevice, 0x20);
 ```
-  
-### Register Banking
-The number of ports vary between MCP23XXX devices depending if it is 8-bit (1 port) or 16-bit (2 ports) expander.  The internal circuitry has a banking concept to group by port registers or by register type.  This enables different configurations for reading/writing schemes.  
 
-To allow this binding to work across the device family, you must use the provided arguments when using Reading/Writing methods.
+### Register Banking and Ports
+
+On 16-bit expanders the GPIO ports are grouped into 2 "ports". Via the `IGpioController` interface we expose the pins logically as 0-15, with the first bank being 0-7 and the second being 8-15.
+
+When using `ReadByte()` or `WriteByte()` on the 16-bit chips you can specify `PortA` or `PortB` to write to respective registers. The default is `PortA`. Reading and writing `ushort` writes to both ports.
+
+The internal circuitry has a banking concept to group by port registers or by register type.  This enables different configurations for reading/writing schemes. While we have some support for the bank styles it is not exposed directly. There is no safe way to detect the mode and most other drivers do not support anything but the defaults. You need to derive from `Mcp23xxx` directly.
 
 #### Example for 16-bit device
-The MCP23X17 has registers defaulted to Bank 1, which group port registers by type.  It is recommended to use the optional arguments for port and bank when addressing the correct register.
 
 ``` csharp
 // Read Port B's Input Polarity Port Register (IPOL).
-byte data = mcp23S17.Read(Register.Address.IPOL, Port.PortB, Bank.Bank0);
-
-// If the device is configured for Bank 1, you can ignore the optional argument.
-byte data = mcp23S17.Read(Register.Address.IPOL, Port.PortB);
+byte data = mcp23S17.Read(Register.IPOL, Port.PortB);
 ```
+
 #### Example for 8-bit device
-The MCP23X08 only contains 1 port so there is not choice for port and bank when addressing the register.
+
+The MCP23X08 only contains 1 port so there is not a choice for port when addressing the register.
 
 ``` csharp
 // Read port A's GPIO Pull-Up Resistor Register (GPPU).
-byte data = mcp23S08.Read(Register.Address.GPPU);
+byte data = mcp23S08.ReadByte(Register.GPPU);
 ```
 
 ### Controller Pins
+
 The `Mcp23xxx` has overloaded pin options when instantiating the device.  This includes a reset line, which is an output pin of the controller to the MCP23XXX RST input pin.  The other pins are interrupt options, which are inputs to the controller from the MCP23XXX INTA/INTB output pins.  They are optional arguments.  Assign as `null` for the pins you don't use.
 
 ```csharp
 // Pin 10: Reset; Output to Mcp23xxx
 // Pin 25: INTA;  Input from Mcp23xxx
 // Pin 17: INTB;  Input from Mcp23xxx
-var mcp23S17 = new Mcp23S17(0x20, spiDevice, 10, 25, 17);
+var mcp23S17 = new Mcp23S17(spiDevice, 0x20, 10, 25, 17);
 ```
 
 The MCP23XXX will be in the reset/disabled state by default if you use the reset pin.  You must call the `Enable()` method to activate the device.
 
 ```csharp
-var mcp23S17 = new Mcp23S17(0x20, spiDevice, 10, 25, 17);
+var mcp23S17 = new Mcp23S17(spiDevice, 0x20, 10, 25, 17);
 mcp23S17.Enable();
 // Can now communicate with device.
 
@@ -84,12 +95,13 @@ mcp23S17.Disable();
 ```
 
 **TODO**: Interrupt pins can only be read for now.  Events are coming in a future PR.
+
 ```csharp
-var mcp23S17 = new Mcp23S17(0x20, spiDevice, 10, 25, 17);
+var mcp23S17 = new Mcp23S17(spiDevice, 0x20, 10, 25, 17);
 PinValue interruptA = mcp23S17.ReadInterruptA();
 PinValue interruptB = mcp23S17.ReadInterruptB();
 ```
 
-## References 
-https://www.adafruit.com/product/732  
-https://learn.adafruit.com/using-mcp23008-mcp23017-with-circuitpython/overview
+## Binding Notes
+
+This binding includes an `Mcp23xxx` abstract class and derived abstract classes for 8-bit `Mcp23x0x` and 16-bit `Mcp23x1x` variants.

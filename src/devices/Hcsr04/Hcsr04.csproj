@@ -1,14 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>$(DefaultBindingTfms)</TargetFrameworks>
     <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="System.Device.Gpio" Version="0.1.0-prerelease*" />
     <Compile Include="Hcsr04.cs" />
     <None Include="README.md" />
   </ItemGroup>
-
 </Project>

@@ -1,10 +1,23 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+
+using System;
+
 namespace Iot.Device.Max7219
 {
+    /// <summary>
+    /// Data about Max7219 fonts
+    /// </summary>
     public static class Fonts
     {
+        /// <summary>
+        /// Default Max7219 font
+        /// </summary>
         public static IFont Default => CP437;
 
+        /// <summary>
+        /// CP437 font data
+        /// </summary>
         public static readonly IFont CP437 = new FixedSizeFont(8, new byte[]
         {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x00
@@ -263,7 +276,7 @@ namespace Iot.Device.Max7219
             0x00, 0x19, 0x1D, 0x17, 0x12, 0x00, 0x00, 0x00, // 0xFD
             0x00, 0x00, 0x3C, 0x3C, 0x3C, 0x3C, 0x00, 0x00, // 0xFE
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0xFF
-         });
+        });
 
         /*# -----------------------------------------------------//-----
         # Bit patterns for Sinclair Font
@@ -273,7 +286,12 @@ namespace Iot.Device.Max7219
         # Note: Only contains characters 0x20 - 0x7E inclusive
         #       All others will appear as blanks
         */
-        public static readonly IFont Sinclair = new FixedSizeFont(8, new byte[] {
+
+        /// <summary>
+        /// Sinclair font
+        /// </summary>
+        public static readonly IFont Sinclair = new FixedSizeFont(8, new byte[]
+        {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x00
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x01
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x02
@@ -540,7 +558,12 @@ namespace Iot.Device.Max7219
         # Note: Only contains characters 0x20 - 0x7F inclusive
         #       All others will appear as blanks
         */
-        public static readonly IFont LCD = new FixedSizeFont(8, new byte[] {
+
+        /// <summary>
+        /// LCD font
+        /// </summary>
+        public static readonly IFont LCD = new FixedSizeFont(8, new byte[]
+        {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x00
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x01
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x02
@@ -804,7 +827,12 @@ namespace Iot.Device.Max7219
         # bit patterns for the Cyrillic Ukrainian font
         # Transposed by Taras (@tarasius)
         */
-        public static readonly IFont CyrillicUkrainian = new FixedSizeFont(8, new byte[] {
+
+        /// <summary>
+        /// Cyrillic Ukrainian font
+        /// </summary>
+        public static readonly IFont CyrillicUkrainian = new FixedSizeFont(8, new byte[]
+        {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // 0x00
             0x7E, 0x81, 0x95, 0xB1, 0xB1, 0x95, 0x81, 0x7E, // 0x01
             0x7E, 0xFF, 0xEB, 0xCF, 0xCF, 0xEB, 0xFF, 0x7E, // 0x02
@@ -1071,7 +1099,12 @@ namespace Iot.Device.Max7219
         # Note: Only contains characters 0x20 - 0x7F inclusive
         #       All others will appear as blanks
         */
-        public static readonly IFont Tiny = new FixedSizeFont(4, new byte[] {
+
+        /// <summary>
+        /// Tiny font
+        /// </summary>
+        public static readonly IFont Tiny = new FixedSizeFont(4, new byte[]
+        {
             0x00, 0x00, 0x00, 0x00, // 0x00
             0x00, 0x00, 0x00, 0x00, // 0x01
             0x00, 0x00, 0x00, 0x00, // 0x02
@@ -1329,6 +1362,5 @@ namespace Iot.Device.Max7219
             0x00, 0x00, 0x00, 0x00, // 0xFE
             0x00, 0x00, 0x00, 0x00, // 0xFF
         }, 2);
-
     }
 }

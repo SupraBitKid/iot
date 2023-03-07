@@ -1,6 +1,5 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
 
 using System.Device.Spi;
 using CommandLine;
@@ -24,13 +23,5 @@ namespace DeviceApiTester.Commands.Spi
 
         [Option('f', "clock-frequency", HelpText = "the clock frequency in Hz for the connection", Required = false, Default = 500_000)]
         public int ClockFrequency { get; set; }
-
-        [Option('d', "device", HelpText = "The SpiDevice to use: { Windows | UnixSysFs }", Required = true)]
-        public SpiDriverType Device { get; set; }
-
-        protected SpiDevice CreateSpiDevice(SpiConnectionSettings connectionSettings)
-        {
-            return DriverFactory.CreateFromEnum<SpiDevice, SpiDriverType>(this.Device, connectionSettings);
-        }
     }
 }

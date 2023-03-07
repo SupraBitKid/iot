@@ -1,11 +1,10 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Collections.Generic;
 
-public class TimeEnvelope
+internal class TimeEnvelope
 {
     private int _count;
     private int _time = 0;
@@ -13,16 +12,16 @@ public class TimeEnvelope
 
     public static void AddTime(IEnumerable<TimeEnvelope> envelopes, int value)
     {
-        foreach(var envelope in envelopes)
+        foreach (var envelope in envelopes)
         {
             envelope.AddTime(value);
         }
     }
 
-    public TimeEnvelope(int count, bool throwOnOverthrow = true)
+    public TimeEnvelope(int count, bool throwOnOverflow = true)
     {
         _count = count;
-        _throwOnOverflow = throwOnOverthrow;
+        _throwOnOverflow = throwOnOverflow;
     }
 
     public int Count
@@ -50,35 +49,24 @@ public class TimeEnvelope
         }
         else if (_throwOnOverflow && _time > _count)
         {
-            throw new Exception ("TimeEnvelope count overflowed!");
+            throw new Exception("TimeEnvelope count overflowed!");
         }
+
         return _time;
     }
 
     public bool IsFirstMultiple(int value)
     {
-        if (_time == value)
-        {
-            return true;
-        }
-        return false;
+        return _time == value;
     }
 
     public bool IsLastMultiple(int value)
     {
-        if (_time - value == 0)
-        {
-            return true;
-        }
-        return false;
+        return _count - value == _time;
     }
 
     public bool IsMultiple(int value)
     {
-        if (_time % value == 0)
-        {
-            return true;
-        }
-        return false;
+        return _time % value == 0;
     }
 }

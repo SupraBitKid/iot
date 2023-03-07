@@ -1,6 +1,5 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Device.I2c;
@@ -23,25 +22,20 @@ namespace DeviceApiTester.Commands.I2c
 
         /// <summary>Executes the command.</summary>
         /// <returns>The command's exit code.</returns>
-        /// <remarks>
-        ///     NOTE: This test app uses the base class's <see cref="CreateI2cDevice"/> method to create a device.<br/>
-        ///     Real-world usage would simply create an instance of an <see cref="I2cDevice"/> implementation:
-        ///     <code>using (var i2cDevice = new UnixI2cDevice(connectionSettings))</code>
-        /// </remarks>
         public int Execute()
         {
             if (FirstRegister == null)
             {
-                Console.WriteLine($"Device={Device}, BusId={BusId}, DeviceAddress={DeviceAddress} (0x{DeviceAddress:X2}), ByteCount={ByteCount}");
+                Console.WriteLine($"BusId={BusId}, DeviceAddress={DeviceAddress} (0x{DeviceAddress:X2}), ByteCount={ByteCount}");
             }
             else
             {
-                Console.WriteLine($"Device={Device}, BusId={BusId}, DeviceAddress={DeviceAddress} (0x{DeviceAddress:X2}), FirstRegister={ FirstRegister} (0x{FirstRegister:X2}), ByteCount={ByteCount}");
+                Console.WriteLine($"BusId={BusId}, DeviceAddress={DeviceAddress} (0x{DeviceAddress:X2}), FirstRegister={ FirstRegister} (0x{FirstRegister:X2}), ByteCount={ByteCount}");
             }
 
             var connectionSettings = new I2cConnectionSettings(BusId, DeviceAddress);
 
-            using (var i2cDevice = CreateI2cDevice(connectionSettings))
+            using (var i2cDevice = I2cDevice.Create(connectionSettings))
             {
                 // Set to first address if needed.
                 if (FirstRegister != null)

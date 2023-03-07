@@ -1,20 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>$(DefaultBindingTfms)</TargetFrameworks>
+    <!--Disabling default items so samples source won't get build by the main library-->
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove=".template.config\**" />
-    <Compile Remove="samples\**" />
-    <Compile Remove="tests\**" />
-    <EmbeddedResource Remove=".template.config\**" />
-    <EmbeddedResource Remove="samples\**" />
-    <EmbeddedResource Remove="tests\**" />
-    <None Remove=".template.config\**" />
-    <None Remove="samples\**" />
-    <None Remove="tests\**" />
-    <PackageReference Include="System.Device.Gpio" Version="0.1.0-prerelease*" />
+    <Compile Include="*.cs" />
+    <None Include="README.md" />
   </ItemGroup>
 
 </Project>

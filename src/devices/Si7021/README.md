@@ -1,21 +1,56 @@
-﻿# Using Si7021 (temperature and humidity sensor)
-
-## Summary
+﻿# Si7021 - Temperature & Humidity Sensor
 
 The Si7021 device provides temperature and humidity sensor readings with an I2C interface.
 
-## Device Family
+## Documentation
 
-**Si7021**: https://cdn.sparkfun.com/datasheets/Sensors/Weather/Si7021.pdf
+- Si7021 [datasheet](https://cdn.sparkfun.com/datasheets/Sensors/Weather/Si7021.pdf)
 
-## Binding Notes
+## Board
 
-An example showing how to read and print the temperature and humidity from this device is available in the [samples](samples) folder.
+![Sensor image](sensor.jpg)
+![Si7021 sensor](Si7021_I2c_Read_Temp_Humidity.png)
 
-The fritzing diagram below shows an example wiring layout between the Si7021 and a Raspberry Pi.
+## Usage
 
-![](samples/Si7021_I2c_Read_Temp_Humidity.png)
+### Hardware Required
 
-## References
+- Si7021
+- Male/Female Jumper Wires
 
-https://www.adafruit.com/product/3251
+### Circuit
+
+- SCL - SCL
+- SDA - SDA
+- VCC - 5V
+- GND - GND
+
+### Code
+
+```csharp
+I2cConnectionSettings settings = new I2cConnectionSettings(1, Si7021.DefaultI2cAddress);
+I2cDevice device = I2cDevice.Create(settings);
+
+using (Si7021 sensor = new Si7021(device, Resolution.Resolution1))
+{
+    while (true)
+    {
+        var tempValue = sensor.Temperature;
+        var humValue = sensor.Humidity;
+
+        Console.WriteLine($"Temperature: {tempValue.Celsius:0.#}\u00B0C");
+        Console.WriteLine($"Relative humidity: {humValue:0.#}%");
+
+        // WeatherHelper supports more calculations, such as saturated vapor pressure, actual vapor pressure and absolute humidity.
+        Console.WriteLine($"Heat index: {WeatherHelper.CalculateHeatIndex(tempValue, humValue).Celsius:0.#}\u00B0C");
+        Console.WriteLine($"Dew point: {WeatherHelper.CalculateDewPoint(tempValue, humValue).Celsius:0.#}\u00B0C");
+        Console.WriteLine();
+
+        Thread.Sleep(1000);
+    }
+}
+```
+
+### Result
+
+![Sample result](RunningResult.jpg)

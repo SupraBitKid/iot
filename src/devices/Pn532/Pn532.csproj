@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>$(DefaultBindingTfms)</TargetFrameworks>
+    <EnableDefaultItems>false</EnableDefaultItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="$(SystemIOPortsPackageVersion)" />
+    <PackageReference Include="System.Memory" Version="$(SystemMemoryPackageVersion)" />
+    <Compile Include="*.cs" />
+    <Compile Include="RfConfiguration\*.cs" />
+    <Compile Include="ListPassive\*.cs" />
+    <Compile Include="AsTarget\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Card\CardRfid.csproj" />
+  </ItemGroup>
+</Project>

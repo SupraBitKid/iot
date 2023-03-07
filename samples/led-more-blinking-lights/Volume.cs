@@ -1,11 +1,9 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
 
 using System;
 using System.Device.Spi;
-using System.Device.Spi.Drivers;
-using Iot.Device.Mcp3008;
+using Iot.Device.Adc;
 
 public class Volume : IDisposable
 {
@@ -15,7 +13,7 @@ public class Volume : IDisposable
         var connection = new SpiConnectionSettings(0,0);
         connection.ClockFrequency = 1000000;
         connection.Mode = SpiMode.Mode0;
-        var spi = new UnixSpiDevice(connection);
+        var spi = SpiDevice.Create(connection);
         var mcp3008 = new Mcp3008(spi);
         var volume = new Volume(mcp3008);
         volume.Init();
